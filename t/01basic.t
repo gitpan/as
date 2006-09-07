@@ -6,7 +6,7 @@ BEGIN {				# Magic Perl CORE pragma
     }
 }
 
-use Test::More tests => 27;
+use Test::More tests => 34;
 
 use strict;
 use warnings;
@@ -15,13 +15,16 @@ use Scalar::Util qw(blessed);
 # module loading ok?
 BEGIN { use_ok( 'as' ) };
 
-# module to check with
-my $Bar;
+# at compile time
+my $Barpm;
+my $foopl;
+my $zippo;
 BEGIN {
-    $Bar = 'Bar.pm';
-    ok open my $handle, ">$Bar" or die $!;
 
-    print $handle <<'MODULE';
+    # module to check with
+    $Barpm = 'Bar.pm';
+    ok open my $handle, ">$Barpm" or die $!;
+    ok print $handle <<'MODULE';
 package Bar;
 sub new {
     @TESTING::new = @_;
@@ -35,13 +38,21 @@ sub unimport {
 }    #unimport
 1;
 MODULE
+    ok close $handle;
 
+    # script to check with
+    $foopl = 'foo.pl';
+    $zippo = 'zippo';
+    ok open $handle, ">$foopl" or die $!;
+    ok print $handle <<"SCRIPT";
+\$TESTING::require = '$zippo';
+SCRIPT
     ok close $handle;
 }    #BEGIN
 
 # basic aliasing
 use Bar as => 'Foo';
-ok unlink $Bar;
+ok unlink $Barpm;
 
 # was import called?
 is $TESTING::import[0], 'Bar';
@@ -96,3 +107,9 @@ is $TESTING::import[2], 'parameters';
 # overloading already aliased module
 eval "use strict as => 'Foo'";
 like $@, qr#^Cannot alias 'Foo' to 'strict': already aliased to 'Bar'#;
+
+my $return = require $foopl;
+is $return, $zippo;
+is $TESTING::require, $zippo;
+undef $TESTING::require;
+ok unlink $foopl;

@@ -1,7 +1,7 @@
 package as;
 
 # make sure we have version info for this module
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 # be as strict and verbose as possible
 use strict;
@@ -38,7 +38,7 @@ BEGIN {
     *CORE::GLOBAL::require = sub {
 
         # perform what was originally expected
-        my $return = eval { $old ? $old->( $_[0] ) : CORE::require( $_[0] ) };
+        my ($return) = eval { $old ? $old->( $_[0] ) : CORE::require( $_[0] ) };
 
         # something wrong, cleanup and bail out
         if ($@) {
@@ -49,7 +49,7 @@ BEGIN {
 
         # not requiring a module, we're done
         my $module = shift;
-        return if $module !~ s#\.pm$##;
+        return $return if $module !~ s#\.pm$##;
         $module =~ s#/#::#g;
 
         # there's an "import" already, embed it
@@ -79,6 +79,9 @@ BEGIN {
                 _alias( $module, $_[-1] );
             };
         }
+
+        # really done now
+        return $return;
     };
 }     #BEGIN
 
@@ -137,7 +140,7 @@ as - load OO module under another name
 
 =head1 VERSION
 
-This documentation describes version 0.02.
+This documentation describes version 0.03.
 
 =head1 SYNOPSIS
 
