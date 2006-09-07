@@ -1,7 +1,7 @@
 package as;
 
 # make sure we have version info for this module
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 # be as strict and verbose as possible
 use strict;
@@ -36,14 +36,32 @@ BEGIN {
 
     # install our own -require- handler
     *CORE::GLOBAL::require = sub {
+        alias my $file = $_[0];
 
         # perform what was originally expected
-        my ($return) = eval { $old ? $old->( $_[0] ) : CORE::require( $_[0] ) };
+        my $return;
+        if ($old) {
+            ($return) = eval { $old->($file) };
+        }
+
+        # seems to be a version check
+        elsif ( $file =~ m#^v?[\d\.]+$# ) {
+            ($return) = eval { CORE::require( 0 + $file ) }; # needs num value
+        }
+
+        # no special -require- action needed, already loaded before
+        elsif ( $INC{$file} ) {
+            $return = 1;
+        }
+
+        # first time -require-
+        else {
+            ($return) = eval { CORE::require($file) };
+        }
 
         # something wrong, cleanup and bail out
         if ($@) {
-            $@ =~ s# in require at as.pm line \d+.\s+##s;
-            $@ =~ s# at as.pm line \d+.\s+##s;
+            $@ =~ s#(?: in require)? at (?:\w+/)*as\.pm line \d+.\s+##s;
             croak $@;
         }
 
@@ -59,7 +77,7 @@ BEGIN {
             *{ $module . '::import' } = sub {
 
                 # we need to do aliasing: do it and remove them params
-                if ( @_ >= 2 and $_[-2] eq 'as' ) {
+                if ( @_ >= 3 and $_[-2] eq 'as' ) {
                     my ( undef, $alias ) = splice @_, -2;
                     _alias( $module, $alias );
                 }
@@ -72,12 +90,7 @@ BEGIN {
 
         # no import to embed, simply install our own
         else {
-            *{ $module . '::import' } = sub {
-                return if @_ < 2 or $_[-2] ne 'as';
-
-                # perform the alias
-                _alias( $module, $_[-1] );
-            };
+            *{ $module . '::import' } = \&_import;
         }
 
         # really done now
@@ -131,6 +144,23 @@ sub _alias {
 }    #_alias
 
 #---------------------------------------------------------------------------
+# _import
+#
+# Generic importer, same for all modules that didn't have an import yet
+#
+#  IN: 1 class
+#      2..N parameters
+
+sub _import {
+
+    # nothing to be done
+    return if @_ < 3 or $_[-2] ne 'as';
+
+    # perform the alias
+    _alias( $_[0], $_[-1] );
+}    #_import
+
+#---------------------------------------------------------------------------
 
 __END__
 
@@ -140,7 +170,7 @@ as - load OO module under another name
 
 =head1 VERSION
 
-This documentation describes version 0.03.
+This documentation describes version 0.04.
 
 =head1 SYNOPSIS
 

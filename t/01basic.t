@@ -6,7 +6,7 @@ BEGIN {				# Magic Perl CORE pragma
     }
 }
 
-use Test::More tests => 34;
+use Test::More tests => 36;
 
 use strict;
 use warnings;
@@ -113,3 +113,9 @@ is $return, $zippo;
 is $TESTING::require, $zippo;
 undef $TESTING::require;
 ok unlink $foopl;
+
+eval "require 5.000";
+ok !$@;
+
+eval "require 7.000";
+ok $@;

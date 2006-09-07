@@ -1,3 +1,9 @@
+0.04	8 September 2006
+	Fixed problem with reloading modules time and time again.
+	Fixed problem with using -require- for version checks.
+	Aliased generic "import" method instead of creating a new one
+	for each module encountered.
+
 0.03	7 September 2006
 	Fixed problem with return value of -require-.
 

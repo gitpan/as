@@ -8,7 +8,7 @@ reserved.  This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 
 Version:
- 0.03
+ 0.04
 
 Required Modules:
  Data::Alias (1.0)
