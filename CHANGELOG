@@ -1,0 +1,6 @@
+0.02	7 September 2006
+	First version based on Data::Alias and uploaded to CPAN.
+
+0.01    14 October 2003
+	First public version of as.pm.  Not on CPAN, but can be found at:
+	http://perlmonks.org/index.pl?node_id=299107
