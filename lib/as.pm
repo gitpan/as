@@ -1,7 +1,7 @@
 package as;
 
 # make sure we have version info for this module
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 # be as strict and verbose as possible
 use strict;
@@ -9,7 +9,6 @@ use warnings;
 
 # modules that we need
 use Carp qw(croak);
-use Data::Alias qw(alias);
 
 # hash containing already aliased modules
 my %ALIASED;
@@ -36,7 +35,7 @@ BEGIN {
 
     # install our own -require- handler
     *CORE::GLOBAL::require = sub {
-        alias my $file = $_[0];
+        my $file = $_[0];
 
         # perform what was originally expected
         my $return;
@@ -61,7 +60,7 @@ BEGIN {
 
         # something wrong, cleanup and bail out
         if ($@) {
-            $@ =~ s#(?: in require)? at (?:\w+/)*as\.pm line \d+.\s+##s;
+            $@ =~ s#(?: in require)? at /?(?:\w+/)*as\.pm line \d+.\s+##s;
             croak $@;
         }
 
@@ -136,11 +135,11 @@ sub _alias {
     }
 
     # perform the actual stash aliasing and remember it
-    alias %{ $alias . '::' } = %{ $module . '::' };
+    *{ $alias . '::' } = *{ $module . '::' };
     $ALIASED{$alias} = $module;
 
     s#::#/#g foreach ( $module, $alias );
-    alias $INC{"$alias.pm"} = $INC{"$module.pm"};
+    $INC{"$alias.pm"} = $INC{"$module.pm"};
 }    #_alias
 
 #---------------------------------------------------------------------------
@@ -170,7 +169,7 @@ as - load OO module under another name
 
 =head1 VERSION
 
-This documentation describes version 0.04.
+This documentation describes version 0.05.
 
 =head1 SYNOPSIS
 
@@ -191,7 +190,7 @@ you to load a module and have it be aliased to another name.
 
 Originaly Inspired by bart's response
 (http://www.perlmonks.org/index.pl?node_id=299082) to a thread about long
-module names on Perl Monks.  Revived after Data::Alias became available.
+module names on Perl Monks.
 
 =head1 THEORY OF OPERATION
 
@@ -217,7 +216,7 @@ an import method anyway.
 
 =head1 REQUIRED MODULES
 
- Data::Alias (1.0)
+ (none)
 
 =head1 AUTHOR
 

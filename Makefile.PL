@@ -9,6 +9,5 @@ WriteMakefile (
  VERSION_FROM	=> 'lib/as.pm',
 
  PREREQ_PM	=> {qw(
-		    Data::Alias		1.0
                    )},
 );

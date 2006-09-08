@@ -1,3 +1,8 @@
+0.05	8 September 2006
+	Removed dependency of Data::Alias: as Matthijs pointed out, there
+	is no need for Data::Alias as a simple glob => glob assignment at
+	compile time does the same.
+
 0.04	8 September 2006
 	Fixed problem with reloading modules time and time again.
 	Fixed problem with using -require- for version checks.
