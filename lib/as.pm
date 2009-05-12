@@ -1,7 +1,7 @@
 package as;
 
 # make sure we have version info for this module
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 # be as strict and verbose as possible
 use strict;
@@ -169,7 +169,7 @@ as - load OO module under another name
 
 =head1 VERSION
 
-This documentation describes version 0.05.
+This documentation describes version 0.06.
 
 =head1 SYNOPSIS
 
@@ -196,7 +196,7 @@ module names on Perl Monks.
 
 This module injects its own handling of C<require> so that it can intercept
 any "as module" parameters.  If found, it will alias the stash of the original
-module with the name to be aliased with using L<Data::Alias>.
+module with the name to be aliased.
 
 =head1 CAVEATS
 
