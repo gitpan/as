@@ -1,3 +1,10 @@
+0.07	31 March 2012
+	Brought up to date to current code esthetics standards.  Also made sure
+	it runs on 5.14.2, threaded and unthreaded.
+
+0.06	12 May 2009
+	Small fixes.
+
 0.05	8 September 2006
 	Removed dependency of Data::Alias: as Matthijs pointed out, there
 	is no need for Data::Alias as a simple glob => glob assignment at

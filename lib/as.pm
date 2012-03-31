@@ -1,14 +1,14 @@
 package as;
 
 # make sure we have version info for this module
-$VERSION = '0.06';
+$VERSION= '0.07';
 
 # be as strict and verbose as possible
 use strict;
 use warnings;
 
 # modules that we need
-use Carp qw(croak);
+use Carp qw( croak );
 
 # hash containing already aliased modules
 my %ALIASED;
@@ -29,33 +29,33 @@ BEGIN {
 
 =cut
 
-    my $old = \&CORE::GLOBAL::require;
+    my $old= \&CORE::GLOBAL::require;
     eval { $old->() };
-    $old = undef if $@ =~ m#CORE::GLOBAL::require#;
+    $old= undef if $@ =~ m#CORE::GLOBAL::require#;
 
     # install our own -require- handler
     *CORE::GLOBAL::require = sub {
-        my $file = $_[0];
+        my $file= $_[0];
 
         # perform what was originally expected
         my $return;
         if ($old) {
-            ($return) = eval { $old->($file) };
+            ($return)= eval { $old->($file) };
         }
 
         # seems to be a version check
         elsif ( $file =~ m#^v?[\d\.]+$# ) {
-            ($return) = eval { CORE::require( 0 + $file ) }; # needs num value
+            ($return)= eval { CORE::require( 0 + $file ) }; # needs num value
         }
 
         # no special -require- action needed, already loaded before
         elsif ( $INC{$file} ) {
-            $return = 1;
+            $return= 1;
         }
 
         # first time -require-
         else {
-            ($return) = eval { CORE::require($file) };
+            ($return)= eval { CORE::require($file) };
         }
 
         # something wrong, cleanup and bail out
@@ -65,19 +65,19 @@ BEGIN {
         }
 
         # not requiring a module, we're done
-        my $module = shift;
+        my $module= shift;
         return $return if $module !~ s#\.pm$##;
         $module =~ s#/#::#g;
 
         # there's an "import" already, embed it
-        if ( my $import = $module->can('import') ) {
+        if ( my $import= $module->can('import') ) {
 
             # install our own importer
-            *{ $module . '::import' } = sub {
+            *{ $module . '::import' }= sub {
 
                 # we need to do aliasing: do it and remove them params
                 if ( @_ >= 3 and $_[-2] eq 'as' ) {
-                    my ( undef, $alias ) = splice @_, -2;
+                    my ( undef, $alias )= splice @_, -2;
                     _alias( $module, $alias );
                 }
 
@@ -89,7 +89,7 @@ BEGIN {
 
         # no import to embed, simply install our own
         else {
-            *{ $module . '::import' } = \&_import;
+            *{ $module . '::import' }= \&_import;
         }
 
         # really done now
@@ -113,7 +113,7 @@ BEGIN {
 #      2 alias class name
 
 sub _alias {
-    my ( $module, $alias ) = @_;
+    my ( $module, $alias )= @_;
 
     # allow dirty stuff happening without anyone complaining about it
     no strict 'refs';
@@ -122,7 +122,7 @@ sub _alias {
     if ( %{ $alias . '::' } ) {
 
         # alias already used, bail out if not same
-        if ( my $old = $ALIASED{$alias} ) {
+        if ( my $old= $ALIASED{$alias} ) {
             croak
               "Cannot alias '$alias' to '$module': already aliased to '$old'"
                 if $old ne $module;
@@ -135,11 +135,13 @@ sub _alias {
     }
 
     # perform the actual stash aliasing and remember it
-    *{ $alias . '::' } = *{ $module . '::' };
-    $ALIASED{$alias} = $module;
+    *{ $alias . '::' }= *{ $module . '::' };
+    $ALIASED{$alias}= $module;
 
     s#::#/#g foreach ( $module, $alias );
-    $INC{"$alias.pm"} = $INC{"$module.pm"};
+    $INC{"$alias.pm"}= $INC{"$module.pm"};
+
+    return;
 }    #_alias
 
 #---------------------------------------------------------------------------
@@ -157,6 +159,8 @@ sub _import {
 
     # perform the alias
     _alias( $_[0], $_[-1] );
+
+    return;
 }    #_import
 
 #---------------------------------------------------------------------------
@@ -169,7 +173,7 @@ as - load OO module under another name
 
 =head1 VERSION
 
-This documentation describes version 0.06.
+This documentation describes version 0.07.
 
 =head1 SYNOPSIS
 
@@ -226,8 +230,8 @@ Please report bugs to <perlbugs@dijkmat.nl>.
 
 =head1 COPYRIGHT
 
-Copyright (c) 2003-2006 Elizabeth Mattijsen <liz@dijkmat.nl>. All rights
-reserved.  This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself.
+Copyright (c) 2003, 2004, 2005, 2006, 2009, 2012 Elizabeth Mattijsen
+<liz@dijkmat.nl>. All rights reserved.  This program is free software; you
+can redistribute it and/or modify it under the same terms as Perl itself.
 
 =cut
