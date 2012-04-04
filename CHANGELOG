@@ -1,3 +1,8 @@
+0.08	4 April 2012
+	Added "warnings::register" as a prerequisite, so that we don't try to
+	use this module on any Perl that doesn't support this / does not have
+	it in core.
+
 0.07	31 March 2012
 	Brought up to date to current code esthetics standards.  Also made sure
 	it runs on 5.14.2, threaded and unthreaded.

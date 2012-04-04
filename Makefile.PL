@@ -9,5 +9,6 @@ WriteMakefile (
  VERSION_FROM	=> 'lib/as.pm',
 
  PREREQ_PM	=> {qw(
+                    warnings::register    0
                    )},
 );

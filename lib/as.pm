@@ -1,7 +1,7 @@
 package as;
 
 # make sure we have version info for this module
-$VERSION= '0.07';
+$VERSION= '0.08';
 
 # be as strict and verbose as possible
 use strict;
@@ -173,7 +173,7 @@ as - load OO module under another name
 
 =head1 VERSION
 
-This documentation describes version 0.07.
+This documentation describes version 0.08.
 
 =head1 SYNOPSIS
 
@@ -220,7 +220,7 @@ an import method anyway.
 
 =head1 REQUIRED MODULES
 
- (none)
+ warnings::register (any)
 
 =head1 AUTHOR
 
